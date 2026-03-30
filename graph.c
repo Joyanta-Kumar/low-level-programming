@@ -29,6 +29,7 @@ void addEdge(__uint8_t node1, __uint8_t node2) {
     graph[node1][node2] = true;
 }
 
+
 void printGraph() {
     printf("\e[31;1mFrom\e[0m\n");
     printf("\e[34;1mTo\e[0m\n");
