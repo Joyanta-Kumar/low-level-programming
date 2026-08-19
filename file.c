@@ -1,37 +1,67 @@
 #include <stdio.h>
+#define separator ','
 
 int main() {
-  printf("\e[34;1mStarted program...\e[0m\n");
+  char* fileName = "";
+  FILE *inFile = NULL;
+  FILE *outFile = NULL;
+  inFile = fopen("subjects.csv", "r");
+  outFile = fopen("subjects.md", "w");
 
-  FILE *file = NULL;
-  file = fopen("test.txt", "r");
-
-  if (file == NULL) {
-    printf("Error while opening the file.\n");
+  if (inFile == NULL || outFile == NULL) {
+    printf("Error while opening the inFile.\n");
     return 0;
   }
-  printf("File is loaded in memory: %p\n", file);
 
-  int highlight = 0;
-  int ch_code = 0;
-  while ((ch_code = fgetc(file)) != EOF) {
-    if (ch_code == '"') {
-      if (highlight == 0) {
-        highlight = 1;
+  char ch_code;
+  char buffer[50];
+  int index = 0;
+  int columns = 0;
+
+  // Headings
+  do {
+    ch_code = fgetc(inFile);
+    if (ch_code == separator || ch_code == '\n') {
+      columns += 1;
+      buffer[index] = '\0';
+      index = -1;
+      printf("| %s ", buffer);
+      if (ch_code == '\n') {
+        printf(" |\n");
       }
-      else {
-        highlight = 0;
-      }
     }
-    if (highlight == 1) {
-        printf("\e[34m");
+    else {
+      buffer[index] = ch_code;
     }
-    printf("%c", ch_code);
-    if (highlight == 0) {
-      printf("\e[0m");
-    }
+    index++;
+  } while (ch_code != '\n');
+
+  // ---
+
+  for (int i = 0; i < columns; i++) {
+    printf("| --- ");
   }
+  printf("|\n");
 
-  fclose(file);
+  // ---
+  
+  // Cells
+  do {
+    ch_code = fgetc(inFile);
+    if (ch_code == separator || ch_code == '\n') {
+      buffer[index] = '\0';
+      index = -1;
+      printf("| %s ", buffer);
+      if (ch_code == '\n') {
+        printf(" |\n");
+      }
+    }
+    else {
+      buffer[index] = ch_code;
+    }
+    index++;
+  } while (ch_code != EOF);
+
+  fclose(inFile);
   return 0;
 }
