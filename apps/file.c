@@ -1,12 +1,16 @@
 #include <stdio.h>
 #define separator ','
 
-int main() {
-  char* fileName = "";
+int main(int argc, const char **argv) {
+  if (argc == 1) {
+    printf("File name required\n");
+    return 0;
+  }
+
   FILE *inFile = NULL;
   FILE *outFile = NULL;
-  inFile = fopen("subjects.csv", "r");
-  outFile = fopen("subjects.md", "w");
+  inFile = fopen(argv[1], "r");
+  outFile = fopen("out.md", "w");
 
   if (inFile == NULL || outFile == NULL) {
     printf("Error while opening the inFile.\n");
@@ -25,9 +29,9 @@ int main() {
       columns += 1;
       buffer[index] = '\0';
       index = -1;
-      printf("| %s ", buffer);
+      fprintf(outFile, "| %s ", buffer);
       if (ch_code == '\n') {
-        printf(" |\n");
+        fprintf(outFile, " |\n");
       }
     }
     else {
@@ -39,9 +43,9 @@ int main() {
   // ---
 
   for (int i = 0; i < columns; i++) {
-    printf("| --- ");
+    fprintf(outFile, "| --- ");
   }
-  printf("|\n");
+  fprintf(outFile, "|\n");
 
   // ---
   
@@ -51,9 +55,9 @@ int main() {
     if (ch_code == separator || ch_code == '\n') {
       buffer[index] = '\0';
       index = -1;
-      printf("| %s ", buffer);
+      fprintf(outFile, "| %s ", buffer);
       if (ch_code == '\n') {
-        printf(" |\n");
+        fprintf(outFile, " |\n");
       }
     }
     else {
